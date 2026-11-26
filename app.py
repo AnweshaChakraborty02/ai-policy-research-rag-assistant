@@ -102,7 +102,7 @@ if uploaded_file is not None:
                         "Cite page numbers where possible.\n\n"
                         f"Document Text:\n{extracted_text[:30000]}"
                     )
-                    response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+                    response = client.models.generate_content(model="gemini-3.8-flash", contents=prompt)
                     st.subheader("Executive Summary")
                     st.markdown(response.text)
                     log_query(uploaded_file.name, "Executive Summary", response.text)
@@ -116,7 +116,7 @@ if uploaded_file is not None:
                         f"Document Text:\n{extracted_text[:30000]}\n\n"
                         f"Question: {user_question}"
                     )
-                    response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+                    response = client.models.generate_content(model="gemini-3.8-flash", contents=prompt)
                     st.subheader("AI Response")
                     st.markdown(response.text)
                     log_query(uploaded_file.name, user_question, response.text)
