@@ -44,9 +44,15 @@ def get_recent_logs():
 
 # Helper with automatic multi-model fallback for high reliability
 def generate_with_fallback(client, prompt):
-    models_to_try = ["gemini-3.8-flash", "gemini-3.8-flash-lite", "gemini-3.8-pro"]
+    available_models = [
+        m.name.replace("models/", "")
+        for m in client.models.list()
+        if "generateContent" in getattr(m, "supported_actions", []) and "flash" in m.name.lower()
+    ]
+    if not available_models:
+        available_models = ["gemini-3.8-flash"]
     last_error = None
-    for model_name in models_to_try:
+    for model_name in available_models:
         try:
             response = client.models.generate_content(model=model_name, contents=prompt)
             return response.text, model_name
@@ -54,7 +60,6 @@ def generate_with_fallback(client, prompt):
             last_error = e
             continue
     raise last_error
-
 init_db()
 
 # Sidebar for API Key & Recent SQL Logs
