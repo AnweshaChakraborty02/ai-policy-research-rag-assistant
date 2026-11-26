@@ -1,5 +1,4 @@
 # ai-policy-research-rag-assistant
-markdown
 # 📊 AI Digital Policy & Economic Research Assistant
 
 An AI-first Retrieval-Augmented Generation (RAG) web application built with **Python, Streamlit, Google Gemini API, and SQLite**. It enables researchers, policymakers, and analysts to upload dense PDF reports (such as RBI circulars, IAMAI industry reports, and economic policy briefs) and generate cited answers or executive summaries in seconds.
