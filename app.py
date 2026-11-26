@@ -42,6 +42,19 @@ def get_recent_logs():
     conn.close()
     return rows
 
+# Helper with automatic multi-model fallback for high reliability
+def generate_with_fallback(client, prompt):
+    models_to_try = ["gemini-3.8-flash", "gemini-3.8-flash-lite", "gemini-3.8-pro"]
+    last_error = None
+    for model_name in models_to_try:
+        try:
+            response = client.models.generate_content(model=model_name, contents=prompt)
+            return response.text, model_name
+        except Exception as e:
+            last_error = e
+            continue
+    raise last_error
+
 init_db()
 
 # Sidebar for API Key & Recent SQL Logs
@@ -76,7 +89,7 @@ if uploaded_file is not None:
 
     st.success(f"Loaded **{uploaded_file.name}** ({len(reader.pages)} pages extracted).")
 
-    col1, col2 = st.columns([3, 1])
+    col1, col2 = st.columns()
     with col1:
         user_question = st.text_input(
             "Ask a question about this document:",
@@ -102,10 +115,11 @@ if uploaded_file is not None:
                         "Cite page numbers where possible.\n\n"
                         f"Document Text:\n{extracted_text[:30000]}"
                     )
-                    response = client.models.generate_content(model="gemini-3.8-flash", contents=prompt)
+                    answer_text, used_model = generate_with_fallback(client, prompt)
                     st.subheader("Executive Summary")
-                    st.markdown(response.text)
-                    log_query(uploaded_file.name, "Executive Summary", response.text)
+                    st.caption(f"Generated using `{used_model}`")
+                    st.markdown(answer_text)
+                    log_query(uploaded_file.name, "Executive Summary", answer_text)
 
             if user_question:
                 with st.spinner("Analyzing document for your answer..."):
@@ -116,10 +130,11 @@ if uploaded_file is not None:
                         f"Document Text:\n{extracted_text[:30000]}\n\n"
                         f"Question: {user_question}"
                     )
-                    response = client.models.generate_content(model="gemini-3.8-flash", contents=prompt)
+                    answer_text, used_model = generate_with_fallback(client, prompt)
                     st.subheader("AI Response")
-                    st.markdown(response.text)
-                    log_query(uploaded_file.name, user_question, response.text)
+                    st.caption(f"Generated using `{used_model}`")
+                    st.markdown(answer_text)
+                    log_query(uploaded_file.name, user_question, answer_text)
 
         except Exception as e:
             st.error(f"API Error Details: {e}")
