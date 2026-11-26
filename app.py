@@ -1,6 +1,3 @@
-streamlit
-google-genai
-pypdf
 import os
 import sqlite3
 from datetime import datetime
