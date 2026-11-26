@@ -3,7 +3,7 @@
 An AI-first **Retrieval-Augmented Generation (RAG)** web application built with **Python, Streamlit, Google Gen AI SDK, and SQLite**. It enables researchers, policy analysts, and developers to upload multi-page PDF documents (such as RBI circulars, IAMAI industry reports, and economic policy briefs) to generate structured executive summaries and cited Q&A responses in seconds.
 
 ## 🚀 Live Application
-**[Open Live App](YOUR_STREAMLIT_APP_LINK_HERE)**
+**[Open Live App](https://ai-policy-research-rag-assistant-cab6meyttckskzggekfuaw.streamlit.app/)**
 
 ---
 
