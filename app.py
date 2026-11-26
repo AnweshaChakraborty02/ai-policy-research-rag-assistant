@@ -89,32 +89,40 @@ if uploaded_file is not None:
 
     if not api_key:
         st.warning("Please configure your GEMINI_API_KEY in Streamlit Secrets or enter it in the sidebar.")
-    else:
-        client = genai.Client(api_key=api_key)
+   else:
+        try:
+            client = genai.Client(api_key=api_key)
 
-        if summarize_btn:
-            with st.spinner("Synthesizing executive summary..."):
-                prompt = (
-                    "You are an expert economic and digital policy analyst. "
-                    "Provide a structured executive summary of the following document with bullet points "
-                    "for Key Objectives, Regulatory/Economic Impact, and Actionable Takeaways. "
-                    "Cite page numbers where possible.\n\n"
-                    f"Document Text:\n{extracted_text[:30000]}"
-                )
-                response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
-                st.subheader("Executive Summary")
-                st.markdown(response.text)
-                log_query(uploaded_file.name, "Executive Summary", response.text)
+            if summarize_btn:
+                with st.spinner("Synthesizing executive summary..."):
+                    prompt = (
+                        "You are an expert economic and digital policy analyst. "
+                        "Provide a structured executive summary of the following document with bullet points "
+                        "for Key Objectives, Regulatory/Economic Impact, and Actionable Takeaways. "
+                        "Cite page numbers where possible.\n\n"
+                        f"Document Text:\n{extracted_text[:30000]}"
+                    )
+                    response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+                    st.subheader("Executive Summary")
+                    st.markdown(response.text)
+                    log_query(uploaded_file.name, "Executive Summary", response.text)
 
-        if user_question:
-            with st.spinner("Analyzing document for your answer..."):
-                prompt = (
-                    "Answer the user's question strictly using the provided document text. "
-                    "Cite exact page numbers (e.g., [Page 2]) for every claim. "
-                    "If the answer is not in the document, state that clearly.\n\n"
-                    f"Document Text:\n{extracted_text[:30000]}\n\n"
-                    f"Question: {user_question}"
-                )
+            if user_question:
+                with st.spinner("Analyzing document for your answer..."):
+                    prompt = (
+                        "Answer the user's question strictly using the provided document text. "
+                        "Cite exact page numbers (e.g., [Page 2]) for every claim. "
+                        "If the answer is not in the document, state that clearly.\n\n"
+                        f"Document Text:\n{extracted_text[:30000]}\n\n"
+                        f"Question: {user_question}"
+                    )
+                    response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+                    st.subheader("AI Response")
+                    st.markdown(response.text)
+                    log_query(uploaded_file.name, user_question, response.text)
+
+        except Exception as e:
+            st.error(f"API Error Details: {e}")
                 response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
                 st.subheader("AI Response")
                 st.markdown(response.text)
