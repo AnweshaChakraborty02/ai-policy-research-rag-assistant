@@ -79,7 +79,7 @@ if uploaded_file is not None:
 
     st.success(f"Loaded **{uploaded_file.name}** ({len(reader.pages)} pages extracted).")
 
-    col1, col2 = st.columns([2, 1])
+    col1, col2 = st.columns([3, 1])
     with col1:
         user_question = st.text_input(
             "Ask a question about this document:",
