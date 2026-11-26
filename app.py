@@ -89,7 +89,7 @@ if uploaded_file is not None:
 
     if not api_key:
         st.warning("Please configure your GEMINI_API_KEY in Streamlit Secrets or enter it in the sidebar.")
-   else:
+    else:
         try:
             client = genai.Client(api_key=api_key)
 
@@ -123,7 +123,3 @@ if uploaded_file is not None:
 
         except Exception as e:
             st.error(f"API Error Details: {e}")
-                response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
-                st.subheader("AI Response")
-                st.markdown(response.text)
-                log_query(uploaded_file.name, user_question, response.text)
